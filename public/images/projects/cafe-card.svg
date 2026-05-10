@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+  <rect width="1200" height="675" fill="#0c0c0c"/>
+  <ellipse cx="600" cy="520" rx="220" ry="28" fill="#facc15" fill-opacity="0.08"/>
+  <path d="M520 380 Q600 280 680 380 L660 440 Q600 400 540 440 Z" fill="#1f1f1f" stroke="#facc15" stroke-opacity="0.45"/>
+  <path d="M560 280 Q600 200 640 280" stroke="#facc15" stroke-opacity="0.35" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="580" cy="250" r="8" fill="#facc15" fill-opacity="0.5"/>
+  <circle cx="620" cy="245" r="10" fill="#facc15" fill-opacity="0.35"/>
+  <rect x="380" y="440" width="440" height="120" rx="16" fill="#141414" stroke="#facc15" stroke-opacity="0.2"/>
+  <rect x="420" y="472" width="120" height="14" rx="3" fill="#facc15" fill-opacity="0.2"/>
+  <rect x="420" y="500" width="200" height="12" rx="3" fill="#333"/>
+  <text x="600" y="620" text-anchor="middle" fill="#facc15" fill-opacity="0.35" font-family="system-ui,sans-serif" font-size="22" letter-spacing="0.2em">CAFÉ · SAMPLE</text>
+</svg>
