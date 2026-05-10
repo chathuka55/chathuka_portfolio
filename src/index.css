@@ -453,10 +453,6 @@
   visibility: hidden;
 }
 
-.projects-scroll-section .projects-curve-path {
-  opacity: 0.92;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .projects-scroll-section .projects-scroll-panel:not(:first-child) {
     opacity: 0;

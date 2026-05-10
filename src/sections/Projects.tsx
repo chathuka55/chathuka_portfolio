@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { projectsConfig, type Project } from '../config';
 import { ExternalLink, Github, ChevronRight, ChevronDown } from 'lucide-react';
@@ -13,11 +13,11 @@ const SCROLL_VH_MULTIPLIER = 1.55;
 
 /**
  * Within each panel's scroll slice, this fraction keeps a single panel fully visible;
- * the remainder is used for the crossfade + curve (reduces "two projects stacked" feel).
+ * the remainder is used for the crossfade (reduces "two projects stacked" feel).
  */
 const PANEL_HOLD_FRAC = 0.72;
 
-/** Map pin progress (0–1) to a float panel index with plateaus between transitions. */
+/** Map pin progress (0–1) to a float panel index with plateaus between crossfades. */
 function progressToFloatIndex(progress: number, panelCount: number, holdFrac: number): number {
   const scaled = progress * panelCount;
   const maxIdx = panelCount - 1;
@@ -31,17 +31,6 @@ function progressToFloatIndex(progress: number, panelCount: number, holdFrac: nu
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
-}
-
-/** Curved wipe path in viewBox 0 0 100 100 (user sample geometry). */
-function buildCurvePath(bulge: number, lift: number): string {
-  const b = Math.max(0, Math.min(1, bulge));
-  const l = Math.max(0, Math.min(1, lift));
-  const vMid = lerp(100, 50, b);
-  const qy = lerp(100, 0, b);
-  const v = lerp(vMid, 0, l);
-  const q = lerp(qy, 0, l);
-  return `M 0 100 V ${v} Q 50 ${q} 100 ${v} V 100 z`;
 }
 
 type PanelItem =
@@ -65,10 +54,8 @@ const introItemShow = {
 const Projects = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [modalProject, setModalProject] = useState<Project | null>(null);
-  const curveGradId = `projects-curve-grad-${useId().replace(/:/g, '')}`;
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   const panels: PanelItem[] = [
@@ -80,10 +67,7 @@ const Projects = () => {
 
   useEffect(() => {
     const pinEl = pinRef.current;
-    const pathEl = pathRef.current;
-    if (!pinEl || !pathEl) return;
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!pinEl) return;
 
     const onResize = () => {
       ScrollTrigger.refresh();
@@ -91,10 +75,6 @@ const Projects = () => {
     window.addEventListener('resize', onResize);
 
     const ctx = gsap.context(() => {
-      const setPath = (d: string) => {
-        pathEl.setAttribute('d', d);
-      };
-
       const updatePanels = (floatIndex: number) => {
         const idxLow = Math.floor(floatIndex);
         const idxHigh = Math.min(panelCount - 1, Math.ceil(floatIndex));
@@ -132,19 +112,6 @@ const Projects = () => {
             visibility,
           });
         });
-
-        if (reduceMotion) {
-          setPath(buildCurvePath(0, 0));
-          return;
-        }
-
-        let bulge = 0;
-        let lift = 0;
-        if (idxLow !== idxHigh) {
-          bulge = Math.sin(Math.PI * t);
-          lift = Math.max(0, Math.min(1, (t - 0.5) / 0.45));
-        }
-        setPath(buildCurvePath(bulge, lift * bulge));
       };
 
       ScrollTrigger.create({
@@ -262,7 +229,7 @@ const Projects = () => {
                     }
                     className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-white/88 sm:text-lg md:text-xl md:leading-relaxed"
                   >
-                    Scroll to explore featured work — each project opens with a curved transition.
+                    Scroll to explore featured work — each project appears as you scroll.
                   </motion.p>
                   <motion.div
                     variants={
@@ -418,30 +385,6 @@ const Projects = () => {
             </div>
           ))}
         </div>
-
-        {/* Curved transition overlay (scroll-driven) */}
-        <svg
-          className="projects-curve-svg absolute inset-0 z-20 w-full h-full pointer-events-none motion-reduce:hidden"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMin slice"
-          aria-hidden
-        >
-          <defs>
-            <linearGradient id={curveGradId} x1="0" y1="0" x2="99" y2="99" gradientUnits="userSpaceOnUse">
-              <stop offset="0.2" stopColor="rgb(255, 135, 9)" />
-              <stop offset="0.7" stopColor="rgb(247, 189, 248)" />
-            </linearGradient>
-          </defs>
-          <path
-            ref={pathRef}
-            className="projects-curve-path"
-            stroke={`url(#${curveGradId})`}
-            fill={`url(#${curveGradId})`}
-            strokeWidth={0.35}
-            vectorEffect="non-scaling-stroke"
-            d="M 0 100 V 100 Q 50 100 100 100 V 100 z"
-          />
-        </svg>
       </div>
 
       <Dialog open={!!modalProject} onOpenChange={(open) => !open && setModalProject(null)}>

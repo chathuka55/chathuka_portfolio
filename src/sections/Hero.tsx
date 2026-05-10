@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, Stars } from '@react-three/drei';
 import { heroConfig } from '../config';
-import { useHeroExitTransition } from '../hooks/useHeroExitTransition';
 import LightPillar from '../components/effects/LightPillar';
 import { heroLightPillarPreset } from '../components/effects/lightPillarTheme';
 import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react';
@@ -174,12 +173,6 @@ const TypewriterText = ({ text }: { text: string }) => {
 };
 
 const Hero = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const heroParallaxRef = useRef<HTMLDivElement>(null);
-  const wipeRef = useRef<HTMLDivElement>(null);
-
-  useHeroExitTransition(sectionRef, heroParallaxRef, wipeRef);
-
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -189,7 +182,6 @@ const Hero = () => {
 
   return (
     <section
-      ref={sectionRef}
       id="hero"
       className="relative z-[2] flex min-h-screen w-full items-center overflow-hidden bg-[#0a0a0a]"
     >
@@ -202,10 +194,7 @@ const Hero = () => {
         aria-hidden
       />
 
-      <div
-        ref={heroParallaxRef}
-        className="relative z-[2] flex min-h-[min(100dvh,100svh)] w-full flex-col justify-center will-change-transform"
-      >
+      <div className="relative z-[2] flex min-h-[min(100dvh,100svh)] w-full flex-col justify-center">
         {/* 3D Canvas */}
         <div className="absolute right-0 top-1/2 z-[2] -translate-y-1/2 h-[60vh] w-full lg:h-[78vh] lg:w-1/2 xl:h-[80vh] 2xl:h-[84vh]">
           <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
@@ -301,19 +290,6 @@ const Hero = () => {
             <div className="w-1 h-2 bg-[#facc15] rounded-full animate-bounce" />
           </div>
         </div>
-      </div>
-
-      {/* Hero → Projects: scroll-scrubbed veil (GSAP ScrollTrigger) */}
-      <div
-        ref={wipeRef}
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[11] h-[min(55vh,560px)] motion-reduce:hidden"
-        aria-hidden
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#070707]/95 to-transparent" />
-        <div
-          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#facc15]/80 to-transparent shadow-[0_0_20px_rgba(250,204,21,0.25)]"
-          aria-hidden
-        />
       </div>
 
       {/* Corner Decorations */}
