@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { footerConfig, navConfig } from '../config';
-import { ArrowUp, Github, Linkedin, Twitter, Instagram, Heart } from 'lucide-react';
+import { scrollToSectionById } from '../lib/scrollPage';
+import { ArrowUp, Github, Linkedin, Facebook, Instagram, Heart } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -34,10 +36,7 @@ const Footer = () => {
   };
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSectionById(sectionId);
   };
 
   return (
@@ -79,13 +78,23 @@ const Footer = () => {
               <h4 className="font-display text-white mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 {footerConfig.quickLinks.map((link) => (
-                  <li key={link}>
-                    <button
-                      onClick={() => scrollToSection(link.toLowerCase())}
-                      className="text-white/50 hover:text-[#facc15] transition-colors text-sm interactive"
-                    >
-                      {link}
-                    </button>
+                  <li key={link.label}>
+                    {link.to ? (
+                      <Link
+                        to={link.to}
+                        className="text-white/50 hover:text-[#facc15] transition-colors text-sm interactive block"
+                      >
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => link.sectionId && scrollToSection(link.sectionId)}
+                        className="text-white/50 hover:text-[#facc15] transition-colors text-sm interactive"
+                      >
+                        {link.label}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -96,7 +105,7 @@ const Footer = () => {
               <h4 className="font-display text-white mb-4">Connect</h4>
               <div className="flex gap-3">
                 <a
-                  href="https://github.com"
+                  href="https://github.com/chathuka55"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg glass-card flex items-center justify-center text-white/50 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
@@ -105,7 +114,7 @@ const Footer = () => {
                   <Github size={18} />
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/chathuka-jayasekara-013595216/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg glass-card flex items-center justify-center text-white/50 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
@@ -114,16 +123,16 @@ const Footer = () => {
                   <Linkedin size={18} />
                 </a>
                 <a
-                  href="https://twitter.com"
+                  href="https://www.facebook.com/chathuka.jayasekara"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg glass-card flex items-center justify-center text-white/50 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
-                  aria-label="Twitter"
+                  aria-label="Facebook"
                 >
-                  <Twitter size={18} />
+                  <Facebook size={18} />
                 </a>
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/chathux_j/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-lg glass-card flex items-center justify-center text-white/50 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"

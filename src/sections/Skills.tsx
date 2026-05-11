@@ -5,6 +5,7 @@ import {
   SiExpress,
   SiGit,
   SiJavascript,
+  SiJest,
   SiLinux,
   SiMongodb,
   SiMysql,
@@ -12,8 +13,10 @@ import {
   SiNodedotjs,
   SiOpenjdk,
   SiPostgresql,
+  SiPostman,
   SiPython,
   SiReact,
+  SiSelenium,
   SiTailwindcss,
   SiThreedotjs,
   SiTypescript,
@@ -44,6 +47,9 @@ const techIcons: Record<string, IconType> = {
   linux: SiLinux,
   javascript: SiJavascript,
   sql: TbSql,
+  postman: SiPostman,
+  selenium: SiSelenium,
+  jest: SiJest,
 };
 
 const Skills = () => {

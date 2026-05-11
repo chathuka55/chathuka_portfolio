@@ -650,6 +650,12 @@ canvas {
   pointer-events: none;
 }
 
+/* First viewport: no 2D kanji particles (hero). Below fold unchanged. */
+.particle-canvas--below-fold {
+  -webkit-clip-path: inset(100dvh 0 0 0);
+  clip-path: inset(100dvh 0 0 0);
+}
+
 /* Navigation Pill */
 .nav-pill {
   background: rgba(250, 204, 21, 0.08);

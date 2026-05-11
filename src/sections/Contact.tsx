@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { contactConfig } from '../config';
-import { Send, Github, Linkedin, Twitter, Instagram, MapPin, Mail, CheckCircle, AlertCircle } from 'lucide-react';
+import { Send, Github, Linkedin, Facebook, Instagram, MapPin, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 const socialIcons = {
   github: Github,
   linkedin: Linkedin,
-  twitter: Twitter,
+  facebook: Facebook,
   instagram: Instagram,
 };
 

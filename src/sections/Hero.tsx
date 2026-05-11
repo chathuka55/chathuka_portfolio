@@ -2,9 +2,10 @@ import { useEffect, useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, Stars } from '@react-three/drei';
 import { heroConfig } from '../config';
+import { scrollToSectionById } from '../lib/scrollPage';
 import LightPillar from '../components/effects/LightPillar';
 import { heroLightPillarPreset } from '../components/effects/lightPillarTheme';
-import { ChevronDown, Github, Linkedin, Twitter } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Facebook, Instagram } from 'lucide-react';
 import * as THREE from 'three';
 
 // Preload samurai model for smoother loading
@@ -98,11 +99,11 @@ const FloatingParticles = () => {
 const Scene = () => {
   return (
     <>
-      <ambientLight intensity={1} />
-      <pointLight position={[10, 10, 10]} intensity={2.5} color="#facc15" />
-      <pointLight position={[-10, -10, -10]} intensity={1.5} color="#fbbf24" />
-      <pointLight position={[0, 0, 15]} intensity={5} color="#facc15" />
-      <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={2.5} color="#fde047" />
+      <ambientLight intensity={1.2} />
+      <pointLight position={[10, 10, 10]} intensity={2.85} color="#facc15" />
+      <pointLight position={[-10, -10, -10]} intensity={1.7} color="#fbbf24" />
+      <pointLight position={[0, 0, 15]} intensity={5.6} color="#facc15" />
+      <spotLight position={[0, 10, 0]} angle={0.5} penumbra={1} intensity={2.85} color="#fde047" />
       
       <SamuraiModel />
       <FloatingParticles />
@@ -174,23 +175,20 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 const Hero = () => {
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSectionById(sectionId);
   };
 
   return (
     <section
       id="hero"
-      className="relative z-[2] flex min-h-screen w-full items-center overflow-hidden bg-[#0a0a0a]"
+      className="relative z-[2] flex min-h-screen w-full items-center overflow-hidden bg-[#030303]"
     >
       {/* Three.js light pillar — gold/charcoal; keeps 3D + UI above */}
       <div className="pointer-events-none absolute inset-0 z-0 min-h-[100dvh] w-full">
         <LightPillar {...heroLightPillarPreset} />
       </div>
       <div
-        className="pointer-events-none absolute inset-0 z-[1] bg-[#0a0a0a]/25"
+        className="pointer-events-none absolute inset-0 z-[1] bg-[#030303]/40"
         aria-hidden
       />
 
@@ -249,7 +247,7 @@ const Hero = () => {
           {/* Social Links */}
           <div className="flex gap-4">
             <a 
-              href="https://github.com" 
+              href="https://github.com/chathuka55" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-white/60 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
@@ -257,7 +255,7 @@ const Hero = () => {
               <Github size={20} />
             </a>
             <a 
-              href="https://linkedin.com" 
+              href="https://www.linkedin.com/in/chathuka-jayasekara-013595216/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-white/60 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
@@ -265,12 +263,20 @@ const Hero = () => {
               <Linkedin size={20} />
             </a>
             <a 
-              href="https://twitter.com" 
+              href="https://www.facebook.com/chathuka.jayasekara" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-white/60 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
             >
-              <Twitter size={20} />
+              <Facebook size={20} />
+            </a>
+            <a 
+              href="https://www.instagram.com/chathux_j/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-white/60 hover:text-[#facc15] hover:border-[#facc15]/50 transition-all interactive"
+            >
+              <Instagram size={20} />
             </a>
           </div>
         </div>

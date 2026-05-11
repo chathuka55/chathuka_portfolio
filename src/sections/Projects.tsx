@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { projectsConfig, type Project } from '../config';
-import { ExternalLink, Github, ChevronRight, ChevronDown } from 'lucide-react';
+import { ExternalLink, ChevronRight, ChevronDown, LayoutGrid } from 'lucide-react';
+import ProjectShotImg from '../components/ProjectShotImg';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,7 +56,9 @@ const Projects = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [modalProject, setModalProject] = useState<Project | null>(null);
+  const scrollProgressFillRef = useRef<HTMLDivElement>(null);
+  const scrollProgressLabelRef = useRef<HTMLSpanElement>(null);
+  const scrollProgressRegionRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion() ?? false;
 
   const panels: PanelItem[] = [
@@ -129,6 +132,19 @@ const Projects = () => {
             PANEL_HOLD_FRAC
           );
           updatePanels(floatIndex);
+          const fill = scrollProgressFillRef.current;
+          if (fill) {
+            fill.style.transform = `scaleX(${self.progress})`;
+            fill.style.transformOrigin = 'left center';
+          }
+          const label = scrollProgressLabelRef.current;
+          if (label) {
+            label.textContent = `${Math.round(self.progress * 100)}%`;
+          }
+          const region = scrollProgressRegionRef.current;
+          if (region) {
+            region.setAttribute('aria-valuenow', String(Math.round(self.progress * 100)));
+          }
         },
       });
 
@@ -143,14 +159,6 @@ const Projects = () => {
 
   const setPanelRef = (index: number) => (el: HTMLDivElement | null) => {
     panelRefs.current[index] = el;
-  };
-
-  const openDetails = (project: Project) => {
-    if (project.githubUrl) {
-      window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
-    } else {
-      setModalProject(project);
-    }
   };
 
   const openLive = (project: Project) => {
@@ -185,7 +193,7 @@ const Projects = () => {
         <div className="absolute inset-0 z-10">
           {panels.map((panel, index) => (
             <div
-              key={panel.kind === 'intro' ? 'intro' : panel.project.id}
+              key={panel.kind === 'intro' ? 'intro' : panel.project.slug}
               ref={setPanelRef(index)}
               className="projects-scroll-panel absolute inset-0 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-20 md:py-24"
             >
@@ -237,7 +245,23 @@ const Projects = () => {
                         ? undefined
                         : { hidden: introItemHidden, show: introItemShow }
                     }
-                    className="mt-2 flex flex-col items-center gap-4"
+                    className="mt-8 flex justify-center"
+                  >
+                    <Link
+                      to="/projects"
+                      className="interactive inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#facc15] to-[#fbbf24] px-8 py-3.5 font-display text-sm font-semibold tracking-wider text-[#0a0a0a] shadow-[0_12px_40px_rgba(250,204,21,0.25)] transition-opacity hover:opacity-90 sm:text-base"
+                    >
+                      <LayoutGrid className="h-5 w-5 shrink-0" aria-hidden />
+                      Project gallery
+                    </Link>
+                  </motion.div>
+                  <motion.div
+                    variants={
+                      prefersReducedMotion
+                        ? undefined
+                        : { hidden: introItemHidden, show: introItemShow }
+                    }
+                    className="mt-8 flex flex-col items-center gap-4"
                   >
                     <span className="text-base font-semibold tracking-wide text-[#facc15] sm:text-lg">
                       Scroll to see projects
@@ -296,16 +320,16 @@ const Projects = () => {
                         ? undefined
                         : { hidden: introItemHidden, show: introItemShow }
                     }
-                    className="mt-10"
+                    className="mt-8 flex justify-center"
                   >
                     <a
-                      href="https://github.com"
+                      href="https://github.com/chathuka55"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="interactive inline-flex items-center gap-2 text-sm font-medium text-[#facc15] transition-colors hover:text-[#fde047] sm:text-base"
+                      className="interactive inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-[#facc15] sm:text-base"
                     >
-                      <span className="font-mono-custom">View All Projects on GitHub</span>
-                      <ChevronRight size={18} />
+                      <span className="font-mono-custom">GitHub</span>
+                      <ChevronRight size={18} aria-hidden />
                     </a>
                   </motion.div>
                 </motion.div>
@@ -324,13 +348,10 @@ const Projects = () => {
                           aria-label={`${panel.project.title} preview video`}
                         />
                       ) : (
-                        <img
+                        <ProjectShotImg
                           src={panel.project.image}
                           alt={panel.project.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.style.opacity = '0.3';
-                          }}
+                          className="absolute inset-0 h-full w-full object-cover"
                         />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-transparent to-transparent pointer-events-none" />
@@ -369,14 +390,13 @@ const Projects = () => {
                           <ExternalLink className="w-[18px] h-[18px] lg:w-5 lg:h-5 shrink-0" aria-hidden />
                           View Project
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => openDetails(panel.project)}
+                        <Link
+                          to={`/projects/${panel.project.slug}`}
                           className="inline-flex items-center justify-center gap-2 min-h-[44px] lg:min-h-[52px] px-5 py-2.5 lg:px-8 lg:py-3.5 rounded-lg lg:rounded-xl border border-[#facc15]/40 bg-[#262626]/40 text-[#facc15] text-sm lg:text-base font-medium hover:bg-[#facc15]/10 transition-colors interactive focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#facc15]"
                         >
-                          <Github className="w-[18px] h-[18px] lg:w-5 lg:h-5 shrink-0" aria-hidden />
-                          View Details
-                        </button>
+                          <ChevronRight className="w-[18px] h-[18px] lg:w-5 lg:h-5 shrink-0" aria-hidden />
+                          Case study
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -385,85 +405,37 @@ const Projects = () => {
             </div>
           ))}
         </div>
+
+        <div
+          ref={scrollProgressRegionRef}
+          className="pointer-events-none absolute bottom-5 left-1/2 z-[25] w-[min(92vw,24rem)] -translate-x-1/2 md:bottom-8"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={0}
+          aria-label="Scroll progress through projects section"
+        >
+          <div className="mb-1 flex items-center justify-between px-0.5">
+            <span className="font-mono-custom text-[10px] uppercase tracking-wider text-white/45">
+              Section scroll
+            </span>
+            <span
+              ref={scrollProgressLabelRef}
+              className="font-mono-custom text-[10px] tabular-nums text-[#facc15]/85"
+            >
+              0%
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/10 ring-1 ring-white/5">
+            <div
+              ref={scrollProgressFillRef}
+              className="h-full w-full origin-left rounded-full bg-gradient-to-r from-[#facc15] to-[#eab308]"
+              style={{ transform: 'scaleX(0)' }}
+            />
+          </div>
+        </div>
       </div>
 
-      <Dialog open={!!modalProject} onOpenChange={(open) => !open && setModalProject(null)}>
-        <DialogContent className="sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-[#0a0a0a] border-[#facc15]/20">
-          {modalProject && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="font-display text-2xl text-white">{modalProject.title}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-6">
-                <p className="text-white/70">{modalProject.longDescription}</p>
-                <div>
-                  <h4 className="font-display text-sm text-[#facc15] mb-2 uppercase tracking-wider">Tech Stack</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {modalProject.techStack.map((tech, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-1 bg-[#262626]/50 rounded text-xs font-mono-custom text-[#facc15]/80"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-display text-sm text-[#facc15] mb-2 uppercase tracking-wider">Features</h4>
-                  <ul className="space-y-1">
-                    {modalProject.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-white/70">
-                        <ChevronRight size={14} className="text-[#facc15] flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {modalProject.screenshots && modalProject.screenshots.length > 0 && (
-                  <div>
-                    <h4 className="font-display text-sm text-[#facc15] mb-3 uppercase tracking-wider">Screenshots</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {modalProject.screenshots.map((src, i) => (
-                        <img
-                          key={i}
-                          src={src}
-                          alt={`${modalProject.title} screenshot ${i + 1}`}
-                          className="w-full rounded-lg border border-[#facc15]/20 object-cover"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-3 pt-4">
-                  {modalProject.githubUrl && (
-                    <a
-                      href={modalProject.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-[#262626]/50 rounded-lg text-sm text-white/70 hover:text-white hover:bg-[#262626] transition-all interactive"
-                    >
-                      <Github size={16} />
-                      Code
-                    </a>
-                  )}
-                  {modalProject.liveUrl && (
-                    <a
-                      href={modalProject.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-[#facc15]/10 border border-[#facc15]/30 rounded-lg text-sm text-[#facc15] hover:bg-[#facc15]/20 transition-all interactive"
-                    >
-                      <ExternalLink size={16} />
-                      Live Demo
-                    </a>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };

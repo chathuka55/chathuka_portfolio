@@ -17,6 +17,9 @@ import ParticleBackground from './components/ParticleBackground';
 import SiteHyperspeedBackdrop from './components/SiteHyperspeedBackdrop';
 import NameScrollBand from './components/NameScrollBand';
 import NotFound from './pages/NotFound';
+import SubpageLayout from './layouts/SubpageLayout';
+import ProjectsShowcase from './pages/ProjectsShowcase';
+import ProjectDetail from './pages/ProjectDetail';
 
 // Main Portfolio Component
 const Portfolio = () => {
@@ -96,6 +99,22 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Portfolio />} />
+        <Route
+          path="/projects"
+          element={
+            <SubpageLayout>
+              <ProjectsShowcase />
+            </SubpageLayout>
+          }
+        />
+        <Route
+          path="/projects/:slug"
+          element={
+            <SubpageLayout>
+              <ProjectDetail />
+            </SubpageLayout>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

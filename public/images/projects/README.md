@@ -1,16 +1,24 @@
-# Project Images
+# Project screenshots
 
-## Card images (shown on project cards)
-- `profile.jpg` - Add to parent `images/` folder
-- `pos-card.svg` - Java POS System (placeholder sample included)
-- `sentinel-card.svg` - Sentinel 24/7 Website
-- `cafe-card.svg` - Café POS System
-- `cctv-card.svg` - CCTV Monitoring System
+Put each project’s folder **here** (same level as this README):
 
-## Screenshots (shown in project detail popup)
-- `pos-1.svg`, `pos-2.svg`, `pos-3.svg`
-- `sentinel-1.svg`, `sentinel-2.svg`
-- `cafe-1.svg`, `cafe-2.svg`
-- `cctv-1.svg`, `cctv-2.svg`
+`app/public/images/projects/<folder>/`
 
-Paths are configured in `src/config.ts`. Replace the bundled SVG placeholders with your own assets (`.jpg`, `.png`, or `.webp`) and update paths in `config.ts` if filenames change.
+Expected folders (must match `src/data/projects.ts`):
+
+| Folder           | Project              |
+|------------------|----------------------|
+| `pos_java`       | Java POS             |
+| `24_7_sentinel`  | Sentinel 24/7        |
+| `coffe_me_pos`   | Café POS             |
+| `cctv`           | CCTV                 |
+| `saloon`         | Salon management     |
+
+Files: `ss1` … `ss8` with extension **`.png`**, **`.jpg`**, **`.jpeg`**, or **`.webp`** (the app tries those in order).
+
+- **`ss1`** — card + case study hero  
+- **`ss2`–`ss8`** — extra screenshots on the case study page  
+
+Example: `public/images/projects/pos_java/ss1.jpg`
+
+If images still do not show, confirm the path is under the **`app`** folder that runs Vite (not a parent `portfolio/public` folder by mistake).

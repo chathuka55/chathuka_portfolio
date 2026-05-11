@@ -3,6 +3,8 @@
 // Yellow & Black Theme with Japanese Aesthetics
 // =============================================================================
 
+import { projects as projectsData } from './data/projects';
+
 // -- Site-wide settings -------------------------------------------------------
 export interface SiteConfig {
   title: string;
@@ -19,8 +21,11 @@ export const siteConfig: SiteConfig = {
 // -- Navigation ---------------------------------------------------------------
 export interface NavItem {
   label: string;
-  sectionId: string;
   icon: string;
+  /** In-page section on the home view */
+  sectionId?: string;
+  /** Standalone route (e.g. project showcase) */
+  to?: string;
 }
 
 export const navConfig = {
@@ -61,105 +66,49 @@ export const heroConfig: HeroConfig = {
 };
 
 // -- Projects Section ---------------------------------------------------------
+export interface ProjectGalleryItem {
+  src: string;
+  alt?: string;
+  caption?: string;
+}
+
 export interface Project {
   id: number;
+  /** URL segment for /projects/:slug */
+  slug: string;
   title: string;
   description: string;
   longDescription: string;
   techStack: string[];
   features: string[];
   image: string;
+  /** Detail hero; falls back to `image` in UI when unset */
+  coverImage?: string;
+  highlights?: string[];
+  problem?: string;
+  solution?: string;
+  gallery?: ProjectGalleryItem[];
   /** Optional looping background video (uses <video> when set, otherwise image) */
   videoUrl?: string;
   screenshots?: string[];
   githubUrl?: string;
   liveUrl?: string;
   category: "desktop" | "web" | "ai" | "security";
+  /** Monorepo / folder layout (plain text), shown on detail page when set */
+  repositoryOverview?: string;
+  /** Prerequisites, install, and run commands (plain text) */
+  setupGuide?: string;
+  /** Documentation topics or links description (plain text) */
+  documentationNotes?: string;
+  /** License / attribution line */
+  licenseLine?: string;
 }
 
 export const projectsConfig = {
   sectionLabel: "FEATURED WORK",
   sectionTitle: "PROJECTS",
   kanjiAccent: "作品",
-  projects: [
-    {
-      id: 1,
-      title: "Java POS System",
-      description: "Enterprise-grade point of sale system with offline-first architecture",
-      longDescription: "A comprehensive desktop POS solution built with Java, featuring wholesale management, repair tracking, and advanced inventory control. Designed for retail environments requiring reliable offline operation.",
-      techStack: ["Java", "JavaFX", "MySQL", "JasperReports"],
-      features: [
-        "Offline-first architecture",
-        "Wholesale management module",
-        "Repair tracking system",
-        "Advanced inventory control",
-        "Multi-user support",
-        "Receipt printing integration"
-      ],
-      image: "/images/projects/pos-card.svg",
-      screenshots: ["/images/projects/pos-1.svg", "/images/projects/pos-2.svg", "/images/projects/pos-3.svg"],
-      githubUrl: "https://github.com",
-      category: "desktop"
-    },
-    {
-      id: 2,
-      title: "Sentinel 24/7 Website",
-      description: "Corporate web presence with service showcase and client portal",
-      longDescription: "A professional corporate website featuring modern design, service showcases, and integrated client portal. Built with performance and security as top priorities.",
-      techStack: ["React", "Node.js", "Express", "MongoDB"],
-      features: [
-        "Corporate web presence",
-        "Service showcase platform",
-        "Client portal integration",
-        "Responsive design",
-        "SEO optimization",
-        "Contact form with validation"
-      ],
-      image: "/images/projects/sentinel-card.svg",
-      screenshots: ["/images/projects/sentinel-1.svg", "/images/projects/sentinel-2.svg"],
-      liveUrl: "https://example.com",
-      category: "web"
-    },
-    {
-      id: 3,
-      title: "Café POS System",
-      description: "Modern web-based POS with real-time order management",
-      longDescription: "A full-stack café management system with real-time order processing, payment gateway integration, and comprehensive analytics dashboard for business insights.",
-      techStack: ["React", "Node.js", "PostgreSQL", "Socket.io", "Stripe"],
-      features: [
-        "Real-time order management",
-        "Payment gateway integration",
-        "Analytics dashboard",
-        "Table management",
-        "Kitchen display system",
-        "Customer loyalty program"
-      ],
-      image: "/images/projects/cafe-card.svg",
-      screenshots: ["/images/projects/cafe-1.svg", "/images/projects/cafe-2.svg"],
-      githubUrl: "https://github.com",
-      liveUrl: "https://example.com",
-      category: "web"
-    },
-    {
-      id: 4,
-      title: "CCTV Monitoring System",
-      description: "AI-powered surveillance with multi-camera dashboard",
-      longDescription: "An intelligent CCTV monitoring solution featuring RTSP stream integration, ONVIF protocol support, and AI-powered motion detection for enhanced security surveillance.",
-      techStack: ["Python", "OpenCV", "TensorFlow", "Flask", "ONVIF"],
-      features: [
-        "RTSP stream integration",
-        "ONVIF protocol support",
-        "AI-powered motion detection",
-        "Multi-camera dashboard",
-        "Recording and playback",
-        "Alert notifications"
-      ],
-      image: "/images/projects/cctv-card.svg",
-      screenshots: ["/images/projects/cctv-1.svg", "/images/projects/cctv-2.svg"],
-      githubUrl: "https://github.com",
-      category: "ai"
-    }
-  ] as Project[],
+  projects: projectsData,
 };
 
 // -- Skills Section -----------------------------------------------------------
@@ -207,6 +156,9 @@ export const skillsConfig = {
     { name: "Git", level: 90, category: "tools", icon: "git" },
     { name: "Docker", level: 75, category: "tools", icon: "docker" },
     { name: "Linux", level: 80, category: "tools", icon: "linux" },
+    { name: "Postman", level: 82, category: "tools", icon: "postman" },
+    { name: "Selenium IDE", level: 76, category: "tools", icon: "selenium" },
+    { name: "Testing (Jest)", level: 78, category: "tools", icon: "jest" },
     // Languages
     { name: "JavaScript", level: 95, category: "languages", icon: "javascript" },
     { name: "SQL", level: 85, category: "languages", icon: "sql" },
@@ -275,6 +227,14 @@ export const timelineConfig = {
       title: "Three.js & 3D Graphics",
       description: "Expanded expertise into 3D web graphics and interactive interfaces using Three.js and WebGL.",
       type: "skill"
+    },
+    {
+      id: 8,
+      date: "2026",
+      title: "Salon Management System (MERN)",
+      description:
+        "Built a full MERN monorepo for salon bookings, e-commerce, inventory, staff, billing, analytics, and real-time chat with Stripe, Socket.IO, and Cloudinary.",
+      type: "project"
     }
   ] as TimelineEvent[],
 };
@@ -297,7 +257,6 @@ export const aboutConfig = {
     { label: "Years of Experience", value: "3+", kanji: "経験" },
     { label: "Lines of Code", value: "50K+", kanji: "コード" },
   ],
-  cvUrl: "/cv-chathuka-jayasekara.pdf",
 };
 
 // -- Contact Section ----------------------------------------------------------
@@ -305,14 +264,14 @@ export const contactConfig = {
   sectionLabel: "GET IN TOUCH",
   sectionTitle: "CONTACT ME",
   kanjiAccent: "連絡",
-  email: "chathukajayasekara@gmail.com",
+  email: "chathukajayaseakra@gmail.com",
   location: "Sri Lanka",
   locationKanji: "スリランカ",
   socialLinks: [
-    { platform: "github", url: "https://github.com", label: "GitHub" },
-    { platform: "linkedin", url: "https://linkedin.com", label: "LinkedIn" },
-    { platform: "twitter", url: "https://twitter.com", label: "Twitter" },
-    { platform: "instagram", url: "https://instagram.com", label: "Instagram" },
+    { platform: "github", url: "https://github.com/chathuka55", label: "GitHub" },
+    { platform: "linkedin", url: "https://www.linkedin.com/in/chathuka-jayasekara-013595216/", label: "LinkedIn" },
+    { platform: "facebook", url: "https://www.facebook.com/chathuka.jayasekara", label: "Facebook" },
+    { platform: "instagram", url: "https://www.instagram.com/chathux_j/", label: "Instagram" },
   ],
   formFields: {
     name: { label: "Name", placeholder: "Your name", required: true },
@@ -325,12 +284,25 @@ export const contactConfig = {
 };
 
 // -- Footer Section -----------------------------------------------------------
+export interface FooterQuickLink {
+  label: string;
+  sectionId?: string;
+  to?: string;
+}
+
 export const footerConfig = {
   brandName: "CHATHUKA JAYASEKARA",
   brandSubtitle: "チャトゥカ・ジャヤセカラ",
   tagline: "Crafting Digital Excellence Through Code",
   kanjiAccent: "コード",
-  quickLinks: ["Home", "Projects", "Skills", "About", "Contact"],
+  quickLinks: [
+    { label: "Home", sectionId: "hero" },
+    { label: "Projects", sectionId: "projects" },
+    { label: "All projects", to: "/projects" },
+    { label: "Skills", sectionId: "skills" },
+    { label: "About", sectionId: "about" },
+    { label: "Contact", sectionId: "contact" },
+  ] as FooterQuickLink[],
   copyright: "© 2025 Chathuka Jayasekara. All rights reserved.",
   copyrightKanji: "著作権所有",
   backToTop: "Back to Top",

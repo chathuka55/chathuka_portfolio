@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { setLenisInstance } from '../lib/scrollPage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,22 +22,21 @@ export const useLenis = () => {
     });
 
     lenisRef.current = lenis;
+    setLenisInstance(lenis);
 
     // Connect Lenis to GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const onTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
-
+    };
+    gsap.ticker.add(onTick);
     gsap.ticker.lagSmoothing(0);
 
-    // Cleanup
     return () => {
+      setLenisInstance(null);
+      gsap.ticker.remove(onTick);
       lenis.destroy();
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
     };
   }, []);
 

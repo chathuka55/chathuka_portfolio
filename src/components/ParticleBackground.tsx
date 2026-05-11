@@ -149,7 +149,7 @@ const ParticleBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="particle-canvas"
+      className="particle-canvas particle-canvas--below-fold"
       style={{ position: 'fixed', inset: 0, zIndex: 0 }}
     />
   );

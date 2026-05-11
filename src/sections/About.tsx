@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { aboutConfig, contactConfig } from '../config';
-import { Download, MapPin, Mail, Code2, Cpu, Globe } from 'lucide-react';
+import { MapPin, Mail, Code2, Cpu, Globe } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -182,16 +182,6 @@ const About = () => {
                 <span>{contactConfig.email}</span>
               </div>
             </div>
-
-            {/* Download CV Button */}
-            <a
-              href={aboutConfig.cvUrl}
-              download
-              className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-display tracking-wider interactive"
-            >
-              <Download size={18} />
-              Download CV
-            </a>
           </div>
         </div>
 
