@@ -41,11 +41,11 @@ const CustomCursor = () => {
     // Animation loop
     let animationId: number;
     const animate = () => {
-      // Smooth cursor follow
-      cursorX += (mouseX - cursorX) * 0.2;
-      cursorY += (mouseY - cursorY) * 0.2;
-      followerX += (mouseX - followerX) * 0.1;
-      followerY += (mouseY - followerY) * 0.1;
+      // Smooth cursor follow (higher = snappier)
+      cursorX += (mouseX - cursorX) * 0.45;
+      cursorY += (mouseY - cursorY) * 0.45;
+      followerX += (mouseX - followerX) * 0.28;
+      followerY += (mouseY - followerY) * 0.28;
 
       cursor.style.transform = `translate(${cursorX - 4}px, ${cursorY - 4}px)`;
       follower.style.transform = `translate(${followerX - 16}px, ${followerY - 16}px)`;
@@ -82,7 +82,7 @@ const CustomCursor = () => {
         className={`custom-cursor ${isHovering ? 'hover' : ''}`}
         style={{
           opacity: isVisible ? 1 : 0,
-          transition: 'opacity 0.2s ease, transform 0.1s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease',
+          transition: 'opacity 0.15s ease, width 0.15s ease, height 0.15s ease, background 0.15s ease',
         }}
       />
       
@@ -92,7 +92,7 @@ const CustomCursor = () => {
         className={`custom-cursor-follower ${isHovering ? 'hover' : ''}`}
         style={{
           opacity: isVisible ? 0.5 : 0,
-          transition: 'opacity 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease',
+          transition: 'opacity 0.15s ease, width 0.15s ease, height 0.15s ease, border-color 0.15s ease',
         }}
       />
 

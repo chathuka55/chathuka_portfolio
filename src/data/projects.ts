@@ -191,6 +191,88 @@ export const projects: Project[] = [
       'Documentation in docs/: API documentation, setup guide, deployment guide, and database schema. Wire URLs in your repo when published.',
     licenseLine: 'chathukajayaseakra@2026 all rights reserved',
   },
+  {
+    id: 6,
+    slug: 'hotel-analytics-scraper',
+    title: 'Hotel Check-in Data Scraper',
+    description:
+      'Educational multi-source hotel check-in scraper and Sri Lanka hotel analytics dashboard.',
+    longDescription:
+      'A complete learning project that teaches web scraping architecture from beginner to production: modular scrapers for Booking.com, Agoda, Expedia, SLTDA, and data.gov.lk; parsers and storage layers; rate limiting, retries, and structured logging; plus an analytics surface for hotel check-in and occupancy insights. Designed for educational use with ethical scraping practices—robots.txt respect, rate limits, and no CAPTCHA bypass.',
+    techStack: [
+      'Python',
+      'Playwright',
+      'BeautifulSoup',
+      'requests',
+      'Pydantic',
+      'Pandas',
+      'SQLAlchemy',
+      'FastAPI',
+      'pytest',
+      'Docker',
+      'loguru',
+      'tenacity',
+    ],
+    features: [
+      'Multi-source scrapers — Booking, Agoda, Expedia, SLTDA, and data.gov.lk',
+      'Modular pipeline — CLI → scrapers → parsers → CSV/JSON/DB storage',
+      'Rate limiting, proxy/UA rotation, and retry with backoff',
+      'Pydantic data models for hotel check-in records',
+      'Unit, integration, selector health, and data-quality tests',
+      'Analytics dashboard for check-ins and occupancy insights',
+    ],
+    image: shot('hotel_scraper', 1),
+    coverImage: shot('hotel_scraper', 1),
+    screenshots: shots('hotel_scraper', 2, 6),
+    githubUrl: 'https://github.com/chathuka55/hotel-analytics-scraper',
+    liveUrl: 'https://hotel-analytics-scraper.vercel.app/',
+    category: 'web',
+    highlights: [
+      'Educational scraper architecture',
+      'Sri Lanka hotel analytics',
+      'Ethical rate-limited design',
+    ],
+    problem:
+      'Learning production-grade scraping needs a realistic domain: multi-source hotel check-in data with rate limits, brittle selectors, and analytics—not a toy single-file script.',
+    solution:
+      'A layered Python system with abstract scrapers/parsers/storage, config-driven selectors, ethical rate limiting, tests, and a hosted analytics UI for Sri Lanka hotel insights.',
+    repositoryOverview: `hotel-scraper/
+├── src/
+│   ├── main.py              # CLI entry point
+│   ├── config/              # Settings + selectors.yaml
+│   ├── scrapers/            # Booking, Agoda, Expedia, SLTDA, data.gov.lk
+│   ├── parsers/             # Hotel + review parsers
+│   ├── storage/             # CSV, JSON, SQLite/Postgres
+│   ├── utils/               # Proxies, rate limit, retry, sessions
+│   └── monitoring/          # Logging + metrics
+├── tests/                   # Unit, integration, fixtures
+├── scripts/                 # Run-all, Docker, seed DB
+├── data/                    # Raw + processed outputs
+└── docs/                    # Architecture + maintenance guides`,
+    setupGuide: `Prerequisites: Python 3.10+, pip, Playwright browsers.
+
+1. Clone and create a virtualenv
+   git clone https://github.com/chathuka55/hotel-analytics-scraper
+   cd hotel-scraper
+   python -m venv venv
+   source venv/bin/activate   # Windows: venv\\Scripts\\activate
+
+2. Install dependencies
+   pip install -r requirements.txt
+   playwright install chromium
+
+3. Run a scraper
+   python src/main.py --source booking --city Colombo --checkin 2026-07-01 --checkout 2026-07-03
+
+4. Run tests
+   pytest tests/ -v --cov=src
+
+5. Run all scrapers
+   bash scripts/run_all.sh`,
+    documentationNotes:
+      'Educational purpose only. Check robots.txt, rate-limit to ~1 request per 3–5 seconds, use a descriptive User-Agent, and stop if blocked by CAPTCHA. Government sources (SLTDA, data.gov.lk) are public. Do not republish scraped data or use commercially without permission. See docs/ for architecture, selector maintenance, and anti-block guidance.',
+    licenseLine: 'Educational use only — respect site ToS, robots.txt, and rate limits',
+  },
 ];
 
 export function getProjectBySlug(slug: string): Project | undefined {
