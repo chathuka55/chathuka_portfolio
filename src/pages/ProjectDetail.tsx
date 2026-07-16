@@ -1,12 +1,20 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, ExternalLink, Github } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Github } from 'lucide-react';
 import ProjectShotImg from '../components/ProjectShotImg';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '../components/ui/dialog';
 import { getProjectBySlug } from '../data/projects';
 import NotFound from './NotFound';
 
 const ProjectDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const project = slug ? getProjectBySlug(slug) : undefined;
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!project) {
     return <NotFound />;
@@ -21,6 +29,19 @@ const ProjectDetail = () => {
     })) ?? []),
     ...(project.gallery ?? []),
   ];
+
+  const lightboxOpen = lightboxIndex !== null;
+  const activeShot = lightboxIndex !== null ? extraShots[lightboxIndex] : undefined;
+
+  const goPrev = () => {
+    if (lightboxIndex === null || extraShots.length === 0) return;
+    setLightboxIndex((lightboxIndex - 1 + extraShots.length) % extraShots.length);
+  };
+
+  const goNext = () => {
+    if (lightboxIndex === null || extraShots.length === 0) return;
+    setLightboxIndex((lightboxIndex + 1) % extraShots.length);
+  };
 
   return (
     <article className="relative px-6 pb-24 lg:px-10 xl:px-14 2xl:px-20">
@@ -152,18 +173,25 @@ const ProjectDetail = () => {
           {extraShots.length > 0 && (
             <section>
               <h2 className="font-display text-sm uppercase tracking-wider text-[#facc15]">Screenshots & gallery</h2>
-              <p className="mt-2 text-sm text-white/50">
-                Screenshots are listed in <code className="text-[#facc15]/80">src/data/projects.ts</code> (under{' '}
-                <code className="text-[#facc15]/80">public/images/projects/</code>).
-              </p>
+              <p className="mt-2 text-sm text-white/50">Click a screenshot to enlarge.</p>
               <div className="mt-6 grid gap-6 sm:grid-cols-2">
                 {extraShots.map((item, i) => (
-                  <figure key={`${item.src}-${i}`} className="overflow-hidden rounded-xl border border-[#facc15]/15 bg-[#111]">
-                    <ProjectShotImg
-                      src={item.src}
-                      alt={item.alt ?? `${project.title} visual ${i + 1}`}
-                      className="aspect-video w-full object-cover"
-                    />
+                  <figure
+                    key={`${item.src}-${i}`}
+                    className="overflow-hidden rounded-xl border border-[#facc15]/15 bg-[#111]"
+                  >
+                    <button
+                      type="button"
+                      className="interactive group relative block w-full cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#facc15]/60"
+                      onClick={() => setLightboxIndex(i)}
+                      aria-label={`Enlarge ${item.alt ?? `${project.title} visual ${i + 1}`}`}
+                    >
+                      <ProjectShotImg
+                        src={item.src}
+                        alt={item.alt ?? `${project.title} visual ${i + 1}`}
+                        className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
+                    </button>
                     {item.caption && (
                       <figcaption className="border-t border-[#facc15]/10 px-3 py-2 text-xs text-white/55">
                         {item.caption}
@@ -205,6 +233,78 @@ const ProjectDetail = () => {
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={lightboxOpen}
+        onOpenChange={(open) => {
+          if (!open) setLightboxIndex(null);
+        }}
+      >
+        <DialogContent
+          showCloseButton
+          className="max-h-[92vh] w-[min(96vw,72rem)] max-w-[min(96vw,72rem)] gap-0 overflow-hidden border-[#facc15]/25 bg-[#0a0a0a] p-0 shadow-[0_32px_100px_rgba(0,0,0,0.7)] sm:max-w-[min(96vw,72rem)]"
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              goPrev();
+            } else if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              goNext();
+            }
+          }}
+        >
+          <DialogTitle className="sr-only">
+            {activeShot?.alt ?? `${project.title} screenshot`}
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Enlarged project screenshot. Use arrow keys or buttons to browse.
+          </DialogDescription>
+
+          <div className="relative flex min-h-[40vh] items-center justify-center bg-[#0a0a0a] p-4 sm:p-8">
+            {activeShot && (
+              <ProjectShotImg
+                src={activeShot.src}
+                alt={activeShot.alt ?? `${project.title} screenshot`}
+                className="max-h-[78vh] w-full object-contain"
+              />
+            )}
+
+            {extraShots.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  className="interactive absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#facc15]/30 bg-[#111]/90 text-[#facc15] hover:border-[#facc15]/60 hover:bg-[#1a1a1a] sm:left-4"
+                  aria-label="Previous screenshot"
+                >
+                  <ChevronLeft className="h-5 w-5" aria-hidden />
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="interactive absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#facc15]/30 bg-[#111]/90 text-[#facc15] hover:border-[#facc15]/60 hover:bg-[#1a1a1a] sm:right-4"
+                  aria-label="Next screenshot"
+                >
+                  <ChevronRight className="h-5 w-5" aria-hidden />
+                </button>
+              </>
+            )}
+          </div>
+
+          {activeShot && (
+            <div className="flex items-center justify-between gap-3 border-t border-[#facc15]/15 px-4 py-3 text-sm text-white/55">
+              <span className="truncate">
+                {activeShot.caption ?? activeShot.alt ?? project.title}
+              </span>
+              {lightboxIndex !== null && (
+                <span className="shrink-0 font-mono-custom text-xs text-[#facc15]/70">
+                  {lightboxIndex + 1} / {extraShots.length}
+                </span>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </article>
   );
 };
